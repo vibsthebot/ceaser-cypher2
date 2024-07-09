@@ -5,7 +5,8 @@ public class ceaserCypher{
         for(int i = 0; i<chars.length; i++){
             if (chars[i] == charToFind) return i;
         }
-        return 0;
+        throw new Error("Input word needs to be lowercase");
+        
     }
     
     public static void main(String[] args){
@@ -35,7 +36,7 @@ public class ceaserCypher{
             System.out.println(finalArray);
         } else if (firstString == 1){
             System.out.println("Type your plaintext: ");
-            String plaintext = scan.next();
+            String plaintext = scan.next().toLowerCase();
             System.out.println("Type your key:");
             int key = scan.nextInt();
             char[] charArray = plaintext.toCharArray();
