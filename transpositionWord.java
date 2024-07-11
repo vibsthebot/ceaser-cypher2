@@ -1,38 +1,27 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
 public class transpositionWord{
-    public static int roundUp(double i){
-        if (Math.floor(i)>i){
-            return (int) (Math.floor(i)+1);
+    public int lowestIndex(List<Integer> list){
+        int index = 0;
+        for (int i = 0; i<list.size(); i++){
+            if (list.get(i)<list.get(index)){
+                index=i;
+            }
         }
-        return (int) i;
+        list.add(index, 100);
+        return index;
     }
-     public static int findIndex(char[] chars, char charToFind){
+    public static int findIndex(char[] chars, char charToFind){
         for(int i = 0; i<chars.length; i++){
             if (chars[i] == charToFind) return i;
         }
         throw new Error("Input word needs to be lowercase");
         
     }
-    
-    public static List<char[]> specialSort(List<char[]> toSortList, List<Integer> orderList){
-        List<Pair<Integer, char[]>> combinedList = new ArrayList<>();
-        for (int i = 0; i < orderList.size(); i++) {
-            combinedList.add(new Pair<>(orderList.get(i), toSortList.get(i)));
-        }
-        Collections.sort(combinedList, new OrderComparator());
 
-        List<char[]> sortedList = new ArrayList<>();
-        for (Pair<Integer, char[]> pair : combinedList) {
-        sortedList.add(pair.getValue());
-        }
-        return sortedList;
-    }
     public static void main(String[] args){
         String Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         char[] letters = Alphabet.toCharArray();
@@ -46,10 +35,11 @@ public class transpositionWord{
             String keyString = scan.next().toUpperCase();
             int key = keyString.length();
             char[] keyArray = keyString.toCharArray();
-            List<Integer> list = new ArrayList<Integer>();
+            int[] list = new int[key];
             for (int i = 0; i<key; i++){
-                list.add(findIndex(letters, keyArray[i]));
+                list[i] = findIndex(letters, keyArray[i]);
             }
+            System.out.println(list);
             char[] charArray = plaintext.toCharArray();
             System.out.println(charArray);
             double numOfCol = (int) Math.ceil((float) charArray.length/ key);
@@ -79,13 +69,25 @@ public class transpositionWord{
                 for (int j = 0; j<numOfCol; j++){
                     finalMatrix[i][j] = firstMatrix[j][i];
                 }
+                System.out.println(finalMatrix[i]);
             }
-            List<char[]> finalMatrixAsList = Arrays.asList(finalMatrix);
-            //List<char[]> finalSortedMatrix = specialSort(finalMatrixAsList, list);
-            
+            char[][] finalMatrixSorted = new char[finalMatrix.length][(int) numOfCol];
+            for (int i = 0; i<finalMatrix.length; i++){
+               index = 0;
+                for (int j = 0; j<list.length; j++){
+                    if (list[i]<list[index]){
+                        index=i;
+                    }
+                }
+                list[index]=100;
+                System.out.println(list[index]);
+                finalMatrixSorted[i] = finalMatrix[index];
+            }
+
+
             index = 0;
             for (int i=0; i<key; i++){
-                char[] row = finalMatrixAsList.get(i);
+                char[] row = finalMatrixSorted[i];
                 for (int j = 0; j<numOfCol; j++){
                     finalArray[index] = row[j];
                     index++;
@@ -120,6 +122,7 @@ public class transpositionWord{
                     index++;
                 }
                 System.out.println(firstMatrix[i]);
+                System.out.println(ciphertext);
 
             }
             char[][] finalMatrix = new char[(int) numOfCol][key];
@@ -131,8 +134,6 @@ public class transpositionWord{
                 }
             }
             List<char[]> finalMatrixAsList = Arrays.asList(finalMatrix);
-            //List<char[]> finalSortedMatrix = specialSort(finalMatrixAsList, list);
-            
             index = 0;
             for (int i=0; i<numOfCol; i++){
                 char[] row = finalMatrixAsList.get(i);
@@ -145,32 +146,6 @@ public class transpositionWord{
 
             System.out.println(finalArray);
         }
-        
+        scan.close();
     }
-
-    static class OrderComparator implements Comparator<Pair<Integer, char[]>> {
-    @Override
-    public int compare(Pair<Integer, char[]> o1, Pair<Integer, char[]> o2) {
-      return Integer.compare(o1.getFirst(), o2.getFirst());
-    }
-  }
-
-  static class Pair<K, V> {
-    private final K key;
-    private final V value;
-
-    public Pair(K key, V value) {
-      this.key = key;
-      this.value = value;
-    }
-
-    public K getFirst() {
-      return key;
-    }
-
-    public V getValue() {
-      return value;
-    }
-  }
 }
-

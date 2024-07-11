@@ -55,7 +55,10 @@ public class ceaserCypher{
 
             }
             System.out.println(finalArray);
+            
         } else System.exit(0);
+        scan.close();
     }
+    
     
 }
