@@ -18,7 +18,7 @@ public class transpositionWord{
         for(int i = 0; i<chars.length; i++){
             if (chars[i] == charToFind) return i;
         }
-        throw new Error("Input word needs to be lowercase");
+        throw new Error("Input word needs to be all letters");
         
     }
 
@@ -75,12 +75,13 @@ public class transpositionWord{
             for (int i = 0; i<finalMatrix.length; i++){
                index = 0;
                 for (int j = 0; j<list.length; j++){
-                    if (list[i]<list[index]){
-                        index=i;
+                    if (list[j]<list[index]){
+                        index=j;
                     }
                 }
-                list[index]=100;
                 System.out.println(list[index]);
+                System.out.println(index);
+                list[index]=100;
                 finalMatrixSorted[i] = finalMatrix[index];
             }
 
@@ -98,54 +99,66 @@ public class transpositionWord{
             System.out.println(finalArray);
         }
         else if (firstString == 2){
-            System.out.println("Ciphertext: ");
-            String ciphertext = scan.next();
+            System.out.println("Plaintext: ");
+            String plaintext = scan.next();
             System.out.println("Key: ");
             String keyString = scan.next().toUpperCase();
             int key = keyString.length();
             char[] keyArray = keyString.toCharArray();
-            List<Integer> list = new ArrayList<Integer>();
+            int[] list = new int[key];
             for (int i = 0; i<key; i++){
-                list.add(findIndex(letters, keyArray[i]));
+                list[i] = findIndex(letters, keyArray[i]);
             }
-            char[] charArray = ciphertext.toCharArray();
+            //System.out.println(list);
+            char[] charArray = plaintext.toCharArray();
             //System.out.println(charArray);
             double numOfCol = (int) Math.ceil((float) charArray.length/ key);
-             
+            
             char[][] firstMatrix = new char[key][(int) numOfCol];
             int index = 0;
             //rows
             for (int i=0; i<key; i++){
                 //columns
                 for (int j = 0; j<numOfCol; j++){
-                    firstMatrix[i][j] = charArray[index];
+                    if (index>=charArray.length){
+                        firstMatrix[i][j] = 'x';
+                    } 
+                    else {
+                        firstMatrix[i][j] = charArray[index];
+                    }
+                    
                     index++;
                 }
                 System.out.println(firstMatrix[i]);
-                System.out.println(ciphertext);
 
             }
+            
+            char[][] firstSortedMatrix = new char[key][(int) numOfCol];
+
+            for (int i = 0; i<firstMatrix.length; i++){
+                index = 0;
+                 for (int j = 0; j<list.length; j++){
+                     if (list[j]<list[index]){
+                         index=j;
+                     }
+                 }
+                 list[index]=100;
+                 firstSortedMatrix[index] = firstMatrix[i];
+                 System.out.println(firstSortedMatrix[i]);
+             }
             char[][] finalMatrix = new char[(int) numOfCol][key];
             char[] finalArray = new char[((int) numOfCol)*key];
+            index = 0;
             for (int i=0; i<numOfCol; i++){
                 //columns
                 for (int j = 0; j<key; j++){
-                    finalMatrix[i][j] = firstMatrix[j][i];
-                }
-            }
-            List<char[]> finalMatrixAsList = Arrays.asList(finalMatrix);
-            index = 0;
-            for (int i=0; i<numOfCol; i++){
-                char[] row = finalMatrixAsList.get(i);
-                for (int j = 0; j<key; j++){
-                    finalArray[index] = row[j];
+                    finalMatrix[i][j] = firstSortedMatrix[j][i];
+                    finalArray[index] = firstSortedMatrix[j][i];
                     index++;
                 }
-                System.out.println(row);
+                System.out.println(finalMatrix[i]);
             }
-
             System.out.println(finalArray);
         }
-        scan.close();
     }
 }
